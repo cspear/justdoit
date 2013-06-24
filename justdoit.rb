@@ -5,40 +5,87 @@ require 'mechanize'
 
 
 
-# use Rack::Auth::Basic, "Restricted Area" do |username, password|
-#     username == 'admin' and password == 'admin'
-#     # $LOGME.debug "#{username} logged in"
-#     @loggedin = username
-# end
 
 
-# a = Mechanize.new { |agent|
-#   agent.user_agent_alias = 'Mac Safari'
-# }
+agent = Mechanize.new
+page = agent.get('http://www.llbean.com/')
 
-# a.get('http://google.com/') do |page|
-#   search_result = page.form_with(:name => 'f') do |search|
-#     search.q = 'Hello world'
-#   end.submit
+page.links.each do |link|
 
-#   search_result.links.each do |link|
-#     puts link.text
-#   end
-# end
 
-a = Mechanize.new do |agent|
-  agent.follow_meta_refresh = true
+  if link.text == "Footwear"
+
+    puts "found footwear ---------------------------"
+
+    link.click
+
+
+    $my_new_link = agent.page.uri.to_s
+
+
+  end
+
+  puts link.text
+
 end
 
-a.get("http://www.llbean.com/") do |page|
+puts "page 2 ------------------------------------"
+page2 = agent.get($my_new_link)
+page2.links.each do |link|
 
-  # form = agent.page.forms[0]
-  # puts agent.page.forms[0].fields.to_s
+  puts link.text
 
+  if link.text == "New Arrivals (90)"
+    puts "yolo swaaaaaaaaaaaaaaaaaaaaaaaaaaag"
 
+    link.click
 
-charlie = a.page.link_with(:text => "Swimwear")
-charlie.click
-  # click_swimwear = a.Click(home_page.link_with(:text => /Swimwear/))
-  # puts click_swimwear
+    $my_new_link1 = agent.page.uri.to_s
+
+    puts link.text
+
+  end
+
 end
+puts "page3--------------------------"
+page3 = agent.get($my_new_link1)
+page3.links.each do |link|
+
+  puts link.text
+
+  if link.text == "customer service"
+    puts "#yolo swaaaaaaaaaaaaaaaaaaaaaaaaaaag&77777&7777777777777777777777777777"
+
+    link.click
+
+    $my_new_link2 = agent.page.uri.to_s
+
+    puts link.text
+
+  end
+
+end
+puts "page4--------------------------"
+page4 = agent.get($my_new_link2)
+page4.links.each do |link|
+
+ puts link.text
+
+  end
+
+puts "----we are trying to enter text in the search box and click search button."
+
+mypage = page4.form_with(:name => 'search') do |finn|
+  finn.freeText = "button"
+end.submit
+
+puts "page5 ---------------- button search"
+$my_new_link3 = agent.page.uri.to_s
+page5 = agent.get($my_new_link3)
+page5.links.each do |link|
+
+  puts link.text
+
+end
+
+
