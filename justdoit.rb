@@ -1,91 +1,113 @@
-require 'rubygems'
-require 'logger'
-require 'mechanize'
-# require 'sinatra'
 
 
 
 
+class Justdoit
 
-agent = Mechanize.new
-page = agent.get('http://www.llbean.com/')
+  def clicking_links(link_name, page)
+    puts "================ new page =============="
 
-page.links.each do |link|
+    agent = Mechanize.new
+    linkpage = agent.get(page)
+
+    linkpage.links.each do |eachlink|
+      puts eachlink.text
+      if eachlink.text == link_name
+        puts "------found it------- #{link_name}"
+        eachlink.click
+        $newpage = agent.page.uri.to_s
+
+      end
+    end
+  end
+
+  def click_country(country_name, page)
+    puts "++++++++ country list ++++++++++++"
+#name = pCountry
+    #get list
+
+    agent = Mechanize.new
+    selection_page = agent.get(page)
+    form = selection_page
+    selection_page.select_list.options_with(:value => 'pCountry').each do |item|
+      puts item.text
+    end
 
 
-  if link.text == "Footwear"
+    #select item
+      # select_list.options_with(:value => /1|2/).each do |field|
+      #   field.value = '20'
+      # end
 
-    puts "found footwear ---------------------------"
+  end
 
-    link.click
+  def select_radio(name, page)
 
+    agent = Mechanize.new
 
-    $my_new_link = agent.page.uri.to_s
+    selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+
+    form = selection_page.form_with(:name => "shell")
+
+    puts "before checking #{form.radiobutton_with(:name => "CertType").checked}"
+
+      form.radiobutton_with(:name => "CertType", :value => "1").check
+
+    puts "after checking #{form.radiobutton_with(:name => "CertType").checked}"
 
 
   end
 
-  puts link.text
+
+
+  def click_checkbox(checkbox_name, page)
+    puts "------------------ checkboxes ----------------"
+
+    # get an instance of Mechanize
+    agent = Mechanize.new
+
+    # GET page
+    selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+
+    # set the checkbox value based on its name.
+    form = selection_page.form_with(:name => "shell")
+
+      puts "checkbox value BEFORE: #{form.checkbox_with(:name => checkbox_name).checked}"
+        form.checkbox_with(:name => checkbox_name).check
+      puts "checkbox value AFTER: #{form.checkbox_with(:name => checkbox_name).checked}"
+
+    end
+
+    def submit_form(form, page)
+      agent = Mechanize.new
+
+    # GET page
+      selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+
+    # set the checkbox value based on its name.
+      form = selection_page.form_with(:name => "shell")
+
+      form.submit
+
+      puts agent.page.uri.to_s
+
+
+    end
+
+
+    def login_creds
+
+      # click 1st name to get credentials page to open.
+
+
+
+    end
+
+
 
 end
 
-puts "page 2 ------------------------------------"
-page2 = agent.get($my_new_link)
-page2.links.each do |link|
 
-  puts link.text
 
-  if link.text == "New Arrivals (90)"
-    puts "yolo swaaaaaaaaaaaaaaaaaaaaaaaaaaag"
-
-    link.click
-
-    $my_new_link1 = agent.page.uri.to_s
-
-    puts link.text
-
-  end
-
-end
-puts "page3--------------------------"
-page3 = agent.get($my_new_link1)
-page3.links.each do |link|
-
-  puts link.text
-
-  if link.text == "customer service"
-    puts "#yolo swaaaaaaaaaaaaaaaaaaaaaaaaaaag&77777&7777777777777777777777777777"
-
-    link.click
-
-    $my_new_link2 = agent.page.uri.to_s
-
-    puts link.text
-
-  end
-
-end
-puts "page4--------------------------"
-page4 = agent.get($my_new_link2)
-page4.links.each do |link|
-
- puts link.text
-
-  end
-
-puts "----we are trying to enter text in the search box and click search button."
-
-mypage = page4.form_with(:name => 'search') do |finn|
-  finn.freeText = "button"
-end.submit
-
-puts "page5 ---------------- button search"
-$my_new_link3 = agent.page.uri.to_s
-page5 = agent.get($my_new_link3)
-page5.links.each do |link|
-
-  puts link.text
-
-end
 
 
