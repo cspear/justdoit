@@ -78,7 +78,6 @@ class Justdoit
 
       # get an instance of Mechanize
       # agent = Mechanize.new
-
       # # GET page
       # selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
 

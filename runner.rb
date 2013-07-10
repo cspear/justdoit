@@ -4,7 +4,6 @@ require 'mechanize'
 # require 'sinatra'
 require './justdoit'
 
-
 @mine = Justdoit.new
 
 arg_username = ARGV[0]
@@ -45,8 +44,6 @@ puts arg_password
 
 	puts "-3-3-3-3-3-3-3-3-"
 	@mine.clicking_links("charlie", $newpage)
-
-
 
 puts "new comment"
 
