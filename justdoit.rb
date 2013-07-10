@@ -10,6 +10,9 @@ class Justdoit
     agent = Mechanize.new
     linkpage = agent.get(page)
 
+    newpage = agent.page.uri.to_s
+    puts "this is the page we are on #{newpage}"
+
     linkpage.links.each do |eachlink|
       puts eachlink.text
       if eachlink.text == link_name
@@ -49,58 +52,88 @@ class Justdoit
 
     form = selection_page.form_with(:name => "shell")
 
-    puts "before checking #{form.radiobutton_with(:name => "CertType").checked}"
+    # puts "before checking #{form.radiobutton_with(:name => "CertType").checked}"
 
       form.radiobutton_with(:name => "CertType", :value => "1").check
 
-    puts "after checking #{form.radiobutton_with(:name => "CertType").checked}"
+    # puts "after checking #{form.radiobutton_with(:name => "CertType").checked}"
 
 
   end
 
 
+  def get_page(page)
 
-  def click_checkbox(checkbox_name, page)
-    puts "------------------ checkboxes ----------------"
-
-    # get an instance of Mechanize
-    agent = Mechanize.new
-
-    # GET page
-    selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
-
-    # set the checkbox value based on its name.
-    form = selection_page.form_with(:name => "shell")
-
-      puts "checkbox value BEFORE: #{form.checkbox_with(:name => checkbox_name).checked}"
-        form.checkbox_with(:name => checkbox_name).check
-      puts "checkbox value AFTER: #{form.checkbox_with(:name => checkbox_name).checked}"
-
-    end
-
-    def submit_form(form, page)
       agent = Mechanize.new
 
-    # GET page
-      selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+      agent.redirect_ok = true
 
-    # set the checkbox value based on its name.
-      form = selection_page.form_with(:name => "shell")
-
-      form.submit
-
-      puts agent.page.uri.to_s
+      # GET page
+      $get_selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+  end
 
 
+    def click_checkbox(checkbox_name, page, last)
+        # puts "------------------ checkboxes ----------------"
+
+      # get an instance of Mechanize
+      # agent = Mechanize.new
+
+      # # GET page
+      # selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/onlinedirectory/")
+
+      # set the checkbox value based on its name.
+        form = $get_selection_page.form_with(:name => "shell")
+
+        form.checkbox_with(:name => checkbox_name).check
+
+        if last == "YES"
+          page = form.submit
+          puts page.body
+        else
+
+        end
     end
 
+    def login_creds(username, password)
+      agent = Mechanize.new
 
-    def login_creds
+      agent.redirect_ok = true
 
-      # click 1st name to get credentials page to open.
+    # GET page
+      selection_page = agent.get("https://ssl12.cyzap.net/gbcicertonline/login/")
+
+    # set the checkbox value based on its name.
+      form = selection_page.form_with(:name => "frmLogin")
+
+      form['pUserName'] = username
+      form['pPassword'] = password
+
+      # test = form[:name => "pUserName"]
+      # test2 = form[:name => "pPassword"]
+      # puts test2
+      # puts test
+
+      page = form.submit
+
+      newpage = agent.page.uri.to_s
+      puts newpage
+
+      sleep 5
+
+      newpage = agent.page.uri.to_s
+      puts newpage
 
 
+      if newpage == "https://ssl12.cyzap.net/dzapps/dbzap.bin/apps/assess/webmembers/login/process_userpass"
+        $failed = true
+        puts "failed login attempt"
+      else
+        $failed = false
+        puts "successful login"
+      end
 
+      # return failed
     end
 
 
